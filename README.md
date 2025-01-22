@@ -16,21 +16,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project tries to maintain an externally-facing route `/rewritten/[slug]` by redirecting to the `/route` page implementation in this project, passing the slug as a search param rather than a path param. To do this, it uses middleware rewrites.
 
-## Learn More
+The issue shown in this project is that `useSearchParams()` cannot be used to fetch the rewritten search params.
 
-To learn more about Next.js, take a look at the following resources:
+## Steps to reproduce
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Navigate to `/`
+2. Click on the first link to `/route?slug=hello-world`
+3. Observe the expected behavior of this page, it shows that the slug is `hello-world`
+4. Go back to `/`
+5. Navigate to the second link that encodes the link as a path param, `/rewritten/hello-world`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Observed: that the slug isn't available
 
-## Deploy on Vercel
+Expected: the slug should be available since we're rendering the rewritten page
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Note: the `x-middleware-rewrite` header _does_ denote that the correctly rewritten route is being used.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![screenshot](/screenshot.png)
